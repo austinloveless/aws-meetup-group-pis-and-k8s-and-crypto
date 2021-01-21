@@ -1,6 +1,5 @@
-import random, time, sys, argparse, boto3, pprint
+import time, sys, argparse, boto3, pprint, requests
 from botocore.config import Config
-import requests
 
 def createWriteClient(region, profile = None):
     if profile == None:
@@ -55,12 +54,9 @@ def writeRecords(symbol, client, dbName, tblName, price, trend):
   client.write_records(DatabaseName=dbName, TableName=tblName,
                                               Records=r, CommonAttributes={})
 
-#########################################
-######### Main ##########
-#########################################
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(prog = 'TimestreamSampleContinuousDataIngestorApplication', description='Execute a example application generating and ingesting time series data.')
+    parser = argparse.ArgumentParser(prog = 'AWSMeetupGroupCrytoTimestreamWriter', description='Get data from server and write to Timestream database')
 
     parser.add_argument('--database-name', '-d', dest="databaseName", action = "store", required = True, help = "The database name in Amazon Timestream - must be already created.")
     parser.add_argument('--table-name', '-t', dest="tableName", action = "store", required = True, help = "The table name in Amazon Timestream - must be already created.")
