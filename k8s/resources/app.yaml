@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-1-service
+  namespace: app
+spec:
+  selector:
+    app: app-1-pod
+  ports:
+    - name: app-1
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: app-1-rs
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-1-pod
+  template:
+    metadata:
+      labels:
+        app: app-1-pod
+    spec:
+      containers:
+        - name: app-1
+          image: austinloveless/app_1:latest
+          env:
+            - name: APP_2_SERVICE_HOST
+              value: app-service
+            - name: APP_2_SERVICE_PORT
+              value: "3000"
+            - name: APP_2_SERVICE_PATH
+              value: /
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-2-service
+  namespace: app
+spec:
+  selector:
+    app: app-2
+  ports:
+    - name: app-1
+      port: 80
+      targetPort: 3001
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: app-2-rs
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-2-pod
+  template:
+    metadata:
+      labels:
+        app: app-2-pod
+    spec:
+      containers:
+        - name: app-2
+          image: austinloveless/app_2:latest
+          ports:
+            - containerPort: 3000
