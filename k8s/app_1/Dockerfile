@@ -1,11 +1,11 @@
-FROM node:12.18.1
+FROM arm32v7/node:12.20.1-alpine3.12
 ENV NODE_ENV=production
 
 WORKDIR /app
 
 COPY ["package.json", "package-lock.json*", "./"]
 
-RUN npm install --production
+RUN npm install
 
 COPY . .
 
