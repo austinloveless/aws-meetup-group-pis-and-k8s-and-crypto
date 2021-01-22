@@ -7,8 +7,11 @@ spec:
   selector:
     app: app-1
   ports:
-    - port: 3000
-  type: NodePort
+    - name: app-1
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -48,8 +51,10 @@ spec:
   selector:
     app: app-2
   ports:
-    - port: 3001
-  type: NodePort
+    - name: app-1
+      port: 80
+      targetPort: 3001
+  type: LoadBalancer
 
 ---
 apiVersion: apps/v1
