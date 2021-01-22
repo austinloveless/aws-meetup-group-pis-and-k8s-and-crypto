@@ -17,7 +17,7 @@ app.get('/health-check', (req, res) => {
 
 app.get('/addAnimal/:newAnimal',  async (req, res) => {
     const animalURL = `http://${process.env.APP_2_SERVICE_HOST}:${process.env.APP_2_SERVICE_PORT}/${process.env.APP_2_SERVICE_PATH}/${req.params.animal}`
-    
+
     await addAnimal(animalURL)
   res.send('axios request sent')
 })

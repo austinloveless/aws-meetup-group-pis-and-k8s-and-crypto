@@ -33,7 +33,7 @@ spec:
           image: austinloveless/app_1:latest
           env:
             - name: APP_2_SERVICE_HOST
-              value: app-service
+              value: app-2-service
             - name: APP_2_SERVICE_PORT
               value: "3000"
             - name: APP_2_SERVICE_PATH
