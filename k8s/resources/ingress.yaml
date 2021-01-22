@@ -12,7 +12,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: app-1-test
+                name: app-1-service
                 port:
                   number: 80
 ---

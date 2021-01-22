@@ -5,7 +5,7 @@ metadata:
   namespace: app
 spec:
   selector:
-    app: app-1-pod
+    app: app-1
   ports:
     - name: app-1
       port: 80
@@ -22,11 +22,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: app-1-pod
+      app: app-1
   template:
     metadata:
       labels:
-        app: app-1-pod
+        app: app-1
     spec:
       containers:
         - name: app-1
@@ -66,11 +66,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: app-2-pod
+      app: app-2
   template:
     metadata:
       labels:
-        app: app-2-pod
+        app: app-2
     spec:
       containers:
         - name: app-2

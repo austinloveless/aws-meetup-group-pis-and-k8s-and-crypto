@@ -18,7 +18,7 @@ app.get('/health-check', (req, res) => {
   res.send("Healthy")
 })
 
-app.post('/animal/:newAnimal', (req, res )  => {
+app.post('/addAnimal/:newAnimal', (req, res )  => {
     arrayData.push(req.params.newAnimal)
     res.send(arrayData)
 })
