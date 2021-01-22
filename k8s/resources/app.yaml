@@ -8,7 +8,7 @@ spec:
     app: app-1
   ports:
     - port: 3000
-
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -49,6 +49,7 @@ spec:
     app: app-2
   ports:
     - port: 3001
+  type: NodePort
 
 ---
 apiVersion: apps/v1
