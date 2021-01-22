@@ -53,7 +53,7 @@ spec:
   ports:
     - name: app-1
       port: 80
-      targetPort: 3001
+      targetPort: 3000
   type: LoadBalancer
 
 ---
