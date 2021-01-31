@@ -2,11 +2,19 @@ import time, sys, boto3, pprint, requests
 from botocore.config import Config
 import settings
 
-def createWriteClient(region, profile = None):
-    print("Connecting to timestream ingest in region: ", region)
-    config = Config()
-    session = boto3.Session()
-    client = session.client(service_name = 'timestream-write', region_name = region, config = config)
+print("NAMESPACE:", settings.NAMESPACE)
+print("SVC:", settings.SVC)
+print("DB:", settings.DATABASE_NAME)
+print("TN:", settings.TABLE_NAME)
+print("AWSREGION", settings.AWS_REGION)
+print("CS", settings.CRYPTO_SYMBOL)
+print("ACCESS", settings.ACCESS_KEY_ID)
+print("SEC", settings.SECRET_ACCESS_KEY)
+
+def createWriteClient(profile = None):
+    print("Connecting to timestream ingest in region: ", settings.AWS_REGION)
+    session = boto3.Session(aws_access_key_id=settings.ACCESS_KEY_ID, aws_secret_access_key=settings.SECRET_ACCESS_KEY, region_name=settings.AWS_REGION)
+    client = session.client(service_name = 'timestream-write', region_name=settings.AWS_REGION)
     return client
 
 def describeTable(client, databaseName, tableName):
@@ -47,17 +55,16 @@ def writeRecords(symbol, client, dbName, tblName, price, trend):
 
 if __name__ == "__main__":
     try:
-        tsClient = createWriteClient(settings.AWS_REGION)
+        tsClient = createWriteClient()
         describeTable(tsClient, settings.DATABASE_NAME, settings.TABLE_NAME)
     except Exception as e:
-        print(e)
+        print("EXCEPTION:", e)
         sys.exit(0)
 
     while True:
-        quote = (requests.get(settings.API_HOST + '/current/' + settings.CRYPTO_SYMBOL).json())['quote']['USD']
+        quote = (requests.get("http://" + settings.SVC + "." + settings.NAMESPACE + ".svc.cluster.local" + '/current/' + settings.CRYPTO_SYMBOL).json())['quote']['USD']
         price = quote['price']
         trendHourly = quote['percent_change_1h']
         writeRecords(settings.CRYPTO_SYMBOL, tsClient, settings.DATABASE_NAME, settings.TABLE_NAME, price, trendHourly)
         time.sleep(30)
-
 

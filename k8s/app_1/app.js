@@ -23,9 +23,9 @@ app.get('/addAnimal/:newAnimal',  async (req, res) => {
 
 const addAnimal = async (animalURL) => {
     await axios.post(animalURL).then(response => {
-        console.log(response.data)
+        console.log("RESPONSE", response.data)
     }).catch(error => {
-        console.log(error)
+        console.log('ERROR', error)
     })
 }
 
