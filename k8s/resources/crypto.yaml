@@ -1,12 +1,12 @@
-########
-# CRYPTO-CLIENT
-########
 apiVersion: v1
 kind: Namespace
 metadata:
   name: crypto
   labels:
     name: crypto
+########
+# CRYPTO-CLIENT
+########
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -84,6 +84,7 @@ spec:
     - name: crypto-server
       port: 80
       targetPort: 8080
+      nodePort: 80001
   type: LoadBalancer
 
 ---
@@ -113,8 +114,8 @@ metadata:
   name: client-secrets
   namespace: crypto
 data:
-  ACCESS_KEY_ID: AWSACCESSKEYID
-  SECRET_ACCESS_KEY: AWSSECRETACCESSKEY
+  ACCESS_KEY_ID: QUtJQVUyN05FWUs3V05IMzdBNlIK
+  SECRET_ACCESS_KEY: amFxL0xhcVJ6T21OenM4VmNqOU1wTXpPV3o0SUc5a2JWei9NRjIvZQo=
 
 ---
 apiVersion: v1
@@ -123,7 +124,7 @@ metadata:
   name: server-secrets
   namespace: crypto
 data:
-  API_KEY: APIKEY
+  API_KEY: NGNhODM5ODUtZWVhNS00MmZhLTkwZWEtZjIyZWM0OTVlZDUwCg==
 
 ---
 apiVersion: v1

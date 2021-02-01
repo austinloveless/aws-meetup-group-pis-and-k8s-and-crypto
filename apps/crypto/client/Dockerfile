@@ -16,7 +16,7 @@ ENV TABLE_NAME="CryptoData"
 ENV AWS_REGION="us-east-1"
 ENV CRYPTO_SYMBOL="BCH"
 ENV API_HOST="http://127.0.0.1:8080"
-ENV AWS_ACCESS_KEY_ID="get_your_own_damn_key_id"
-ENV AWS_SECRET_ACCESS_KEY="get_your_own_damn_secret"
+ENV ACCESS_KEY_ID="get_your_own_damn_key_id"
+ENV SECRET_ACCESS_KEY="get_your_own_damn_secret"
 
 CMD [ "python", "timestream-writer.py" ]

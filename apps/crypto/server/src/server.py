@@ -7,11 +7,15 @@ api = Flask(__name__)
 api.config['CACHE_TYPE'] = 'simple'
 api.cache = Cache(api) 
 
+@api.route('/health-check', methods=['GET'])
+def health_check():
+    return 'Healthy'
+
 @api.cache.cached(timeout=60, key_prefix="current_prices")
 def getCachedPrices():
 	print('getting prices')
 	return requests.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=5000', headers = {'X-CMC_PRO_API_KEY': settings.API_KEY}).json()
-	
+
 @api.route('/current/<symbol>', methods=['GET'])
 def get_prices(symbol):
 	prices = getCachedPrices()

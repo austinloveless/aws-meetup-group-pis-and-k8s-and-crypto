@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const axios = require('axios')
  
-const PORT = 3000;
+const PORT = 3001;
 const HOST = '0.0.0.0';
 
 console.log(process.env)
@@ -16,7 +16,7 @@ app.get('/health-check', (req, res) => {
 })
 
 app.get('/addAnimal/:newAnimal',  async (req, res) => {
-    const animalURL = `http://${process.env.APP_2_SERVICE_HOST}:${process.env.APP_2_SERVICE_PORT}/${process.env.APP_2_SERVICE_PATH}/addAnimal/${req.params.newAnimal}`
+    const animalURL = `http://${process.env.SVC}.${process.env.NAMESPACE}.svc.cluster.local/addAnimal/${req.params.newAnimal}`
     await addAnimal(animalURL)
   res.send('axios request sent')
 })
