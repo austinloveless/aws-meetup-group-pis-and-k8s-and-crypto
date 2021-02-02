@@ -5,11 +5,6 @@ import settings
 print("NAMESPACE:", settings.NAMESPACE)
 print("SVC:", settings.SVC)
 print("DB:", settings.DATABASE_NAME)
-print("TN:", settings.TABLE_NAME)
-print("AWSREGION", settings.AWS_REGION)
-print("CS", settings.CRYPTO_SYMBOL)
-print("ACCESS", settings.ACCESS_KEY_ID)
-print("SEC", settings.SECRET_ACCESS_KEY)
 
 def createWriteClient(profile = None):
     print("Connecting to timestream ingest in region: ", settings.AWS_REGION)
@@ -24,6 +19,14 @@ def describeTable(client, databaseName, tableName):
 
 def get_current_time():
     return str(int(round(time.time() * 1000)))
+
+def apiUrl():
+  global url
+  if settings.SVC is None :
+    url = settings.API_HOST_LOCAL
+  else: 
+    url = "http://" + settings.SVC + "." + settings.NAMESPACE + ".svc.cluster.local"
+  return url
 
 def writeRecords(symbol, client, dbName, tblName, price, trend):
   n = str(get_current_time())
@@ -62,9 +65,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     while True:
-        quote = (requests.get("http://" + settings.SVC + "." + settings.NAMESPACE + ".svc.cluster.local" + '/current/' + settings.CRYPTO_SYMBOL).json())['quote']['USD']
-        price = quote['price']
-        trendHourly = quote['percent_change_1h']
-        writeRecords(settings.CRYPTO_SYMBOL, tsClient, settings.DATABASE_NAME, settings.TABLE_NAME, price, trendHourly)
-        time.sleep(30)
-
+          quote = (requests.get(apiUrl() + '/current/' + settings.CRYPTO_SYMBOL).json())['quote']['USD']
+          price = quote['price']
+          trendHourly = quote['percent_change_1h']
+          writeRecords(settings.CRYPTO_SYMBOL, tsClient, settings.DATABASE_NAME, settings.TABLE_NAME, price, trendHourly)
+          time.sleep(30)

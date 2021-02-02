@@ -4,17 +4,29 @@ metadata:
   name: crypto
   labels:
     name: crypto
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: client-secrets
+  namespace: crypto
+type: Opaque
+data:
+  ACCESS_KEY_ID: BASE64 encoded AWS ACCESS_KEY_ID
+  SECRET_ACCESS_KEY: BASE64 encoded AWS SECRET_ACCESS_KEY
+
 ########
-# CRYPTO-CLIENT
+# CRYPTO-CLIENT #1
 ########
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
-  name: crypto-client-rs
+  name: crypto-client-rs-1
   namespace: crypto
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: crypto-client
@@ -30,16 +42,114 @@ spec:
             - secretRef:
                 name: client-secrets
             - configMapRef:
-                name: client-configmap
+                name: client-configmap-1
           env:
             - name: SVC
               value: crypto-server-service
             - name: NAMESPACE
               value: crypto
-      volumes:
-        - name: client
-          secret:
-            secretName: client-secrets
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-configmap-1
+  namespace: crypto
+data:
+  DATEBASE_NAME: AWSMeetupGroupESDB
+  TABLE_NAME: CryptoData
+  AWS_REGION: us-east-1
+  CRYPTO_SYMBOL: BCH
+
+########
+# CRYPTO-CLIENT #2
+########
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: crypto-client-rs-2
+  namespace: crypto
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crypto-client
+  template:
+    metadata:
+      labels:
+        app: crypto-client
+    spec:
+      containers:
+        - name: crypto-client
+          image: austinloveless/crypto-client
+          envFrom:
+            - secretRef:
+                name: client-secrets
+            - configMapRef:
+                name: client-configmap-2
+          env:
+            - name: SVC
+              value: crypto-server-service
+            - name: NAMESPACE
+              value: crypto
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-configmap-2
+  namespace: crypto
+data:
+  DATEBASE_NAME: AWSMeetupGroupESDB
+  TABLE_NAME: CryptoData
+  AWS_REGION: us-east-1
+  CRYPTO_SYMBOL: ETH
+
+########
+# CRYPTO-CLIENT #3
+########
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: crypto-client-rs-3
+  namespace: crypto
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crypto-client
+  template:
+    metadata:
+      labels:
+        app: crypto-client
+    spec:
+      containers:
+        - name: crypto-client
+          image: austinloveless/crypto-client
+          envFrom:
+            - secretRef:
+                name: client-secrets
+            - configMapRef:
+                name: client-configmap-3
+          env:
+            - name: SVC
+              value: crypto-server-service
+            - name: NAMESPACE
+              value: crypto
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-configmap-3
+  namespace: crypto
+data:
+  DATEBASE_NAME: AWSMeetupGroupESDB
+  TABLE_NAME: CryptoData
+  AWS_REGION: us-east-1
+  CRYPTO_SYMBOL: LTC
+
 ########
 # CRYPTO-SERVER
 ########
@@ -67,10 +177,6 @@ spec:
                 name: server-secrets
           ports:
             - containerPort: 8080
-      volumes:
-        - name: server
-          secret:
-            secretName: server-secrets
 ---
 apiVersion: v1
 kind: Service
@@ -84,38 +190,8 @@ spec:
     - name: crypto-server
       port: 80
       targetPort: 8080
-      nodePort: 80001
+      nodePort: 32001
   type: LoadBalancer
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: crypto-server-ingress
-  namespace: crypto
-  annotations:
-    kubernetes.io/ingress.class: nginx
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: crypto-server-service
-                port:
-                  number: 80
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: client-secrets
-  namespace: crypto
-data:
-  ACCESS_KEY_ID: QUtJQVUyN05FWUs3V05IMzdBNlIK
-  SECRET_ACCESS_KEY: amFxL0xhcVJ6T21OenM4VmNqOU1wTXpPV3o0SUc5a2JWei9NRjIvZQo=
 
 ---
 apiVersion: v1
@@ -123,17 +199,6 @@ kind: Secret
 metadata:
   name: server-secrets
   namespace: crypto
+type: Opaque
 data:
-  API_KEY: NGNhODM5ODUtZWVhNS00MmZhLTkwZWEtZjIyZWM0OTVlZDUwCg==
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: client-configmap
-  namespace: crypto
-data:
-  DATEBASE_NAME: AWSMeetupGroupESDB
-  TABLE_NAME: CryptoData
-  AWS_REGION: us-east-1
-  CRYPTO_SYMBOL: BCH
+  API_KEY: BASE64 encoded API_KEY

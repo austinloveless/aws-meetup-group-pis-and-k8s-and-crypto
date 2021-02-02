@@ -15,7 +15,7 @@ ENV DATEBASE_NAME="AWSMeetupGroupESDB"
 ENV TABLE_NAME="CryptoData"
 ENV AWS_REGION="us-east-1"
 ENV CRYPTO_SYMBOL="BCH"
-ENV API_HOST="http://127.0.0.1:8080"
+ENV API_HOST_LOCAL="http://127.0.0.1:8080"
 ENV ACCESS_KEY_ID="get_your_own_damn_key_id"
 ENV SECRET_ACCESS_KEY="get_your_own_damn_secret"
 
