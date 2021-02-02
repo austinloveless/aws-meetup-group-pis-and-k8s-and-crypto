@@ -11,7 +11,7 @@ RUN pip install -r requirements.txt
 # Bundle app source
 COPY src /app
 
-ENV API_KEY=figure_out_how_to_get_this_from_$API_KEY
+ENV API_KEY="get your own api key :)"
 
 EXPOSE 8080
 CMD [ "python", "server.py" ]	

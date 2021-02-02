@@ -22,7 +22,7 @@ def get_current_time():
 
 def apiUrl():
   global url
-  if settings.SVC is None :
+  if not settings.SVC:
     url = settings.API_HOST_LOCAL
   else: 
     url = "http://" + settings.SVC + "." + settings.NAMESPACE + ".svc.cluster.local"

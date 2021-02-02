@@ -1,3 +1,3 @@
 #!/bin/bash
 
-export API_KEY=get_ya_own_damn_key
+export API_KEY="get your own api key :)"
