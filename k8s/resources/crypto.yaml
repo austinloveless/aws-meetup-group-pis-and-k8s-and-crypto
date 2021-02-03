@@ -1,3 +1,4 @@
+# Crypto Namespace
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -6,6 +7,7 @@ metadata:
     name: crypto
 
 ---
+# Client Secrets
 apiVersion: v1
 kind: Secret
 metadata:
@@ -16,144 +18,89 @@ data:
   ACCESS_KEY_ID: BASE64 encoded AWS ACCESS_KEY_ID
   SECRET_ACCESS_KEY: BASE64 encoded AWS SECRET_ACCESS_KEY
 
-########
-# CRYPTO-CLIENT #1
-########
 ---
-apiVersion: apps/v1
-kind: ReplicaSet
+########
+# CRYPTO-CLIENT
+########
+
+# Job
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: crypto-client-rs-1
+  name: crypto-client-job
   namespace: crypto
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: crypto-client
   template:
     metadata:
       labels:
         app: crypto-client
     spec:
       containers:
-        - name: crypto-client
+        # BCH CLIENT
+        - name: crypto-client-bch
           image: austinloveless/crypto-client
           envFrom:
             - secretRef:
                 name: client-secrets
             - configMapRef:
-                name: client-configmap-1
+                name: client-configmap
           env:
             - name: SVC
               value: crypto-server-service
             - name: NAMESPACE
               value: crypto
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: client-configmap-1
-  namespace: crypto
-data:
-  DATEBASE_NAME: AWSMeetupGroupESDB
-  TABLE_NAME: CryptoData
-  AWS_REGION: us-east-1
-  CRYPTO_SYMBOL: BCH
-
-########
-# CRYPTO-CLIENT #2
-########
----
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: crypto-client-rs-2
-  namespace: crypto
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: crypto-client
-  template:
-    metadata:
-      labels:
-        app: crypto-client
-    spec:
-      containers:
-        - name: crypto-client
+            - name: CRYPTO_SYMBOL
+              value: BCH
+        # ETH CLIENT
+        - name: crypto-client-eth
           image: austinloveless/crypto-client
           envFrom:
             - secretRef:
                 name: client-secrets
             - configMapRef:
-                name: client-configmap-2
+                name: client-configmap
           env:
             - name: SVC
               value: crypto-server-service
             - name: NAMESPACE
               value: crypto
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: client-configmap-2
-  namespace: crypto
-data:
-  DATEBASE_NAME: AWSMeetupGroupESDB
-  TABLE_NAME: CryptoData
-  AWS_REGION: us-east-1
-  CRYPTO_SYMBOL: ETH
-
-########
-# CRYPTO-CLIENT #3
-########
----
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: crypto-client-rs-3
-  namespace: crypto
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: crypto-client
-  template:
-    metadata:
-      labels:
-        app: crypto-client
-    spec:
-      containers:
-        - name: crypto-client
+            - name: CRYPTO_SYMBOL
+              value: ETH
+        # LTC CLIENT
+        - name: crypto-client-ltc
           image: austinloveless/crypto-client
           envFrom:
             - secretRef:
                 name: client-secrets
             - configMapRef:
-                name: client-configmap-3
+                name: client-configmap
           env:
             - name: SVC
               value: crypto-server-service
             - name: NAMESPACE
               value: crypto
+            - name: CRYPTO_SYMBOL
+              value: LTC
+      restartPolicy: Never
+
 ---
+# ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: client-configmap-3
+  name: client-configmap
   namespace: crypto
 data:
   DATEBASE_NAME: AWSMeetupGroupESDB
   TABLE_NAME: CryptoData
   AWS_REGION: us-east-1
-  CRYPTO_SYMBOL: LTC
 
+---
 ########
 # CRYPTO-SERVER
 ########
----
+
+# ReplicaSet
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
@@ -178,6 +125,7 @@ spec:
           ports:
             - containerPort: 8080
 ---
+# Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -194,6 +142,7 @@ spec:
   type: LoadBalancer
 
 ---
+# Server Secrets
 apiVersion: v1
 kind: Secret
 metadata:
