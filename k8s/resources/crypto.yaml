@@ -7,6 +7,10 @@ metadata:
     name: crypto
 
 ---
+########
+# CRYPTO-CLIENT
+########
+
 # Client Secrets
 apiVersion: v1
 kind: Secret
@@ -19,10 +23,18 @@ data:
   SECRET_ACCESS_KEY: BASE64 encoded AWS SECRET_ACCESS_KEY
 
 ---
-########
-# CRYPTO-CLIENT
-########
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-configmap
+  namespace: crypto
+data:
+  DATEBASE_NAME: AWSMeetupGroupESDB
+  TABLE_NAME: CryptoData
+  AWS_REGION: us-east-1
 
+---
 # Job
 apiVersion: batch/v1
 kind: Job
@@ -82,18 +94,6 @@ spec:
             - name: CRYPTO_SYMBOL
               value: LTC
       restartPolicy: Never
-
----
-# ConfigMap
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: client-configmap
-  namespace: crypto
-data:
-  DATEBASE_NAME: AWSMeetupGroupESDB
-  TABLE_NAME: CryptoData
-  AWS_REGION: us-east-1
 
 ---
 ########
