@@ -1,4 +1,4 @@
-# AWSMeetupGroup: Kubernetes on Raspberry Pis with AWS Timestream and Grafana
+# Kubernetes on Raspberry Pis with AWS Timestream and Grafana
 
 In this project, we build and deploy a Kubernetes Cluster on a fleet of Raspberry Pis, store Cryptocurrency data in AWS Timestream, and visualize the data in Grafana.
 
