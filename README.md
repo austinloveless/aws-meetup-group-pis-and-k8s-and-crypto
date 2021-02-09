@@ -211,6 +211,8 @@ Next Meetup: https://www.meetup.com/AWSMeetupGroup/events/275161155/
 
 LiveStream: https://youtu.be/dDyIxWlx4Qs
 
+# Final Architecture:
+
 <p align="center">
   <img src="./img/architecture-diagram.png" alt="Raspberry Pi K8s" width="500">
 </p>
